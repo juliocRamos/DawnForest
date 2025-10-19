@@ -1,0 +1,25 @@
+[gd_scene load_steps=6 format=3 uid="uid://d3hy46qvlopvm"]
+
+[ext_resource type="TileSet" uid="uid://uaxiaqxf8jgu" path="res://resources/floor/floor.tres" id="1_6pyri"]
+[ext_resource type="TileSet" uid="uid://cs7sbi4b88eb6" path="res://resources/decoration/fence.tres" id="2_6pyri"]
+[ext_resource type="TileSet" uid="uid://jwlki6i3eo7c" path="res://resources/decoration/grass.tres" id="2_j85su"]
+[ext_resource type="TileSet" uid="uid://c6rb8o78w63du" path="res://resources/decoration/rock.tres" id="3_j85su"]
+[ext_resource type="TileSet" uid="uid://bgc64gvwcsb3j" path="res://resources/decoration/lamp.tres" id="4_oekho"]
+
+[node name="TileMap" type="TileMap"]
+format = 2
+
+[node name="floor" type="TileMapLayer" parent="."]
+tile_set = ExtResource("1_6pyri")
+
+[node name="fence" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_6pyri")
+
+[node name="rock" type="TileMapLayer" parent="."]
+tile_set = ExtResource("3_j85su")
+
+[node name="lamp" type="TileMapLayer" parent="."]
+tile_set = ExtResource("4_oekho")
+
+[node name="grass" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_j85su")
