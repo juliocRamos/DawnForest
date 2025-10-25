@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=4 uid="uid://glc5txdr2m64"]
+[gd_scene load_steps=8 format=4 uid="uid://glc5txdr2m64"]
 
 [ext_resource type="TileSet" uid="uid://uaxiaqxf8jgu" path="res://resources/floor/floor.tres" id="1_365vi"]
 [ext_resource type="TileSet" uid="uid://bgc64gvwcsb3j" path="res://resources/decoration/lamp.tres" id="2_d6aa2"]
@@ -6,6 +6,7 @@
 [ext_resource type="TileSet" uid="uid://c6rb8o78w63du" path="res://resources/decoration/rock.tres" id="4_s5x26"]
 [ext_resource type="TileSet" uid="uid://jwlki6i3eo7c" path="res://resources/decoration/grass.tres" id="5_ouj2m"]
 [ext_resource type="PackedScene" uid="uid://c6tatp608gxl3" path="res://scenes/env/background.tscn" id="6_grdtu"]
+[ext_resource type="PackedScene" uid="uid://bdichmr88oojx" path="res://scenes/player/player_body.tscn" id="7_d6aa2"]
 
 [node name="Level" type="Node2D"]
 
@@ -32,3 +33,5 @@ tile_map_data = PackedByteArray("AAARAAUAAgAAAAAAAAATAAMAAAAAAAAAAAAPAAUAAQAAAAA
 tile_set = ExtResource("5_ouj2m")
 
 [node name="Background" parent="." instance=ExtResource("6_grdtu")]
+
+[node name="PlayerBody" parent="." instance=ExtResource("7_d6aa2")]
