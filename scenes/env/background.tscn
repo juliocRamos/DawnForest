@@ -67,4 +67,4 @@ texture = ExtResource("3_q8j1l")
 
 [node name="Mask" parent="." instance=ExtResource("6_q8j1l")]
 use_parent_material = true
-color = Color(0.78352344, 0.7835234, 0.7835234, 1)
+color = Color(0.23753914, 0.23753908, 0.23753932, 1)
