@@ -1,6 +1,8 @@
 extends Sprite2D
 class_name PlayerTexture
 
+signal game_over
+
 var normal_attack: bool = true
 var suffix: String = "_right"
 var shield_off: bool = false
@@ -10,7 +12,7 @@ var anim_locked: bool = false
 
 @export var animation: AnimationPlayer = get_parent()
 @export var player: Player = get_parent()
-
+@export var attack_collision: CollisionShape2D = get_parent()
 
 func animate(direction: Vector2) -> void:
 	if anim_locked:
@@ -18,7 +20,9 @@ func animate(direction: Vector2) -> void:
 
 	verify_position(direction)
 	
-	if player.attacking or player.defending or player.crouching or player.next_to_wall():
+	if player.on_hit or player.dead:
+		hit_behavior()
+	elif player.attacking or player.defending or player.crouching or player.next_to_wall():
 		action_behavior()
 	elif direction.y != 0:
 		vertical_behavior(direction)
@@ -88,3 +92,23 @@ func on_animation_finished(anim_name: StringName) -> void:
 		"attack_right":
 			player.attacking = false
 			normal_attack = false
+		"hit":
+			player.on_hit = false
+			player.set_physics_process(true)
+			
+			if player.defending:
+				animation.play("shield")
+			
+			if player.crouching:
+				animation.play("crouch")
+		"death":
+			emit_signal("game_over")
+
+func hit_behavior() -> void:
+	player.set_physics_process(false)
+	attack_collision.set_deferred("disabled", true)
+	
+	if player.dead:
+		animation.play("death")
+	elif player.on_hit:
+		animation.play("hit")

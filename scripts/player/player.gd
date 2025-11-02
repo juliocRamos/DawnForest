@@ -9,6 +9,8 @@ var landing: bool = false
 var attacking: bool = false
 var defending: bool = false
 var crouching: bool = false
+var on_hit: bool = false
+var dead: bool = false
 
 # wall slide
 var not_on_wall: bool = true # achei isso curioso, talvez apenas negar o on_wall seja o suficiente
@@ -24,7 +26,7 @@ var can_track_input: bool = true
 
 @onready var player_sprite: Sprite2D = $PlayerTexture
 @onready var wall_ray: RayCast2D = $WallRay
-
+@onready var stats: Node = $PlayerStatus
 
 func _physics_process(delta: float) -> void:
 	vertical_movement_env(delta)
@@ -52,21 +54,25 @@ func attack() -> void:
 func crouch() -> void:
 	if Input.is_action_pressed("crouch") and is_on_floor() and not defending:
 		crouching = true
+		stats.shielding = false
 		defending = false
 		can_track_input = false
 	elif not defending:
 		crouching = false
 		can_track_input = true
+		stats.shielding = false
 		player_sprite.crouching_off = true
 
 
 func defend() -> void:
 	if Input.is_action_pressed("defend") and is_on_floor() and not crouching:
 		defending = true
+		stats.shielding = true
 		can_track_input = false
 	elif not crouching:
 		defending = false
 		can_track_input = true
+		stats.shielding = false
 		player_sprite.shield_off = true
 
 
@@ -87,7 +93,6 @@ func vertical_movement_env(_delta: float) -> void:
 				jump_strength *= JUMP_FACTOR
 
 			velocity.y = jump_strength
-		print(velocity)
 
 
 func horizontal_movement_env() -> void:

@@ -1,9 +1,10 @@
-[gd_scene load_steps=20 format=3 uid="uid://djg8dkycal7pq"]
+[gd_scene load_steps=23 format=3 uid="uid://djg8dkycal7pq"]
 
 [ext_resource type="Texture2D" uid="uid://chjpe51oq1pw4" path="res://assets/player/char_red.png" id="1_8afob"]
 [ext_resource type="Script" uid="uid://3e3lowqpxj30" path="res://scripts/player/player.gd" id="1_dovo2"]
 [ext_resource type="Script" uid="uid://cwkh4g05evb4r" path="res://scripts/player/player_texture.gd" id="3_gmlin"]
 [ext_resource type="Texture2D" uid="uid://ha0yekwbg7tg" path="res://assets/effect/light.png" id="4_lvxji"]
+[ext_resource type="Script" uid="uid://ccckawdc40h1w" path="res://scripts/player/stats.gd" id="5_p47bc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gmlin"]
 size = Vector2(11.5, 32)
@@ -244,6 +245,22 @@ tracks/0/keys = {
 "values": [71, 72, 73]
 }
 
+[sub_resource type="Animation" id="Animation_ugbui"]
+resource_name = "death"
+length = 1.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerTexture:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59]
+}
+
 [sub_resource type="Animation" id="Animation_p47bc"]
 resource_name = "fall"
 length = 0.4
@@ -259,6 +276,22 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [33, 34, 35, 36]
+}
+
+[sub_resource type="Animation" id="Animation_gx1jg"]
+resource_name = "hit"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerTexture:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [40, 40, 41, 42]
 }
 
 [sub_resource type="Animation" id="Animation_8afob"]
@@ -402,7 +435,9 @@ _data = {
 &"attack_left": SubResource("Animation_0owmy"),
 &"attack_right": SubResource("Animation_qek5x"),
 &"crouch": SubResource("Animation_5gtgg"),
+&"death": SubResource("Animation_ugbui"),
 &"fall": SubResource("Animation_p47bc"),
+&"hit": SubResource("Animation_gx1jg"),
 &"idle": SubResource("Animation_8afob"),
 &"jump": SubResource("Animation_lvxji"),
 &"landing": SubResource("Animation_75vfm"),
@@ -420,7 +455,7 @@ script = ExtResource("1_dovo2")
 position = Vector2(-1, 12)
 shape = SubResource("RectangleShape2D_gmlin")
 
-[node name="PlayerTexture" type="Sprite2D" parent="." node_paths=PackedStringArray("animation", "player")]
+[node name="PlayerTexture" type="Sprite2D" parent="." node_paths=PackedStringArray("animation", "player", "attack_collision")]
 z_index = 10
 texture = ExtResource("1_8afob")
 hframes = 8
@@ -428,6 +463,7 @@ vframes = 11
 script = ExtResource("3_gmlin")
 animation = NodePath("../Animation")
 player = NodePath("..")
+attack_collision = NodePath("../AttackArea/CollisionShape2D")
 
 [node name="Animation" type="AnimationPlayer" parent="."]
 libraries = {
@@ -453,4 +489,20 @@ energy = 0.7
 texture = ExtResource("4_lvxji")
 texture_scale = 0.3
 
+[node name="PlayerStatus" type="Node" parent="." node_paths=PackedStringArray("player", "collision_area")]
+script = ExtResource("5_p47bc")
+player = NodePath("..")
+collision_area = NodePath("../ColisionHitArea")
+
+[node name="InvencibilityTimer" type="Timer" parent="PlayerStatus"]
+one_shot = true
+
+[node name="ColisionHitArea" type="Area2D" parent="."]
+
+[node name="Collision" type="CollisionShape2D" parent="ColisionHitArea"]
+position = Vector2(-1, 12)
+shape = SubResource("RectangleShape2D_gmlin")
+
 [connection signal="animation_finished" from="Animation" to="PlayerTexture" method="on_animation_finished"]
+[connection signal="timeout" from="PlayerStatus/InvencibilityTimer" to="PlayerStatus" method="on_invencibility_timer_timeout"]
+[connection signal="area_entered" from="ColisionHitArea" to="PlayerStatus" method="on_colision_hit_area_entered"]
